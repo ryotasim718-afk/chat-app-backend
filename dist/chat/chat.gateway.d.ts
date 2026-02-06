@@ -45,11 +45,11 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
                 username: string;
             };
         } & {
+            roomId: string;
             id: string;
+            content: string;
             createdAt: Date;
             userId: string;
-            content: string;
-            roomId: string;
         };
         error?: undefined;
     }>;
