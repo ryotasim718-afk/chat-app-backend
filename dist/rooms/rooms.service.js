@@ -1,0 +1,157 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RoomsService = void 0;
+const common_1 = require("@nestjs/common");
+const prisma_service_1 = require("../prisma/prisma.service");
+let RoomsService = class RoomsService {
+    prisma;
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async create(createRoomDto, userId) {
+        const room = await this.prisma.room.create({
+            data: {
+                name: createRoomDto.name,
+                members: {
+                    create: {
+                        userId,
+                    },
+                },
+            },
+            include: {
+                members: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                username: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        return room;
+    }
+    async findAll() {
+        return this.prisma.room.findMany({
+            include: {
+                members: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                username: true,
+                            },
+                        },
+                    },
+                },
+                _count: {
+                    select: { messages: true },
+                },
+            },
+        });
+    }
+    async findOne(id) {
+        const room = await this.prisma.room.findUnique({
+            where: { id },
+            include: {
+                members: {
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                username: true,
+                            },
+                        },
+                    },
+                },
+                messages: {
+                    take: 50,
+                    orderBy: { createdAt: 'desc' },
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                username: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        if (!room) {
+            throw new common_1.NotFoundException('Room not found');
+        }
+        return {
+            ...room,
+            messages: room.messages.reverse(),
+        };
+    }
+    async join(roomId, userId) {
+        const existing = await this.prisma.roomMember.findUnique({
+            where: {
+                userId_roomId: {
+                    userId,
+                    roomId,
+                },
+            },
+        });
+        if (existing) {
+            return existing;
+        }
+        return this.prisma.roomMember.create({
+            data: {
+                userId,
+                roomId,
+            },
+        });
+    }
+    async leave(roomId, userId) {
+        return this.prisma.roomMember.delete({
+            where: {
+                userId_roomId: {
+                    userId,
+                    roomId,
+                },
+            },
+        });
+    }
+    async getMessages(roomId, limit = 50, before) {
+        return this.prisma.message.findMany({
+            where: {
+                roomId,
+                ...(before && {
+                    createdAt: {
+                        lt: new Date(before),
+                    },
+                }),
+            },
+            take: limit,
+            orderBy: { createdAt: 'desc' },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                    },
+                },
+            },
+        });
+    }
+};
+exports.RoomsService = RoomsService;
+exports.RoomsService = RoomsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+], RoomsService);
+//# sourceMappingURL=rooms.service.js.map
