@@ -6,8 +6,8 @@ export declare class RoomsController {
     create(createRoomDto: CreateRoomDto, req: any): Promise<{
         members: ({
             user: {
-                username: string;
                 id: string;
+                username: string;
             };
         } & {
             id: string;
@@ -27,8 +27,8 @@ export declare class RoomsController {
         };
         members: ({
             user: {
-                username: string;
                 id: string;
+                username: string;
             };
         } & {
             id: string;
@@ -45,8 +45,8 @@ export declare class RoomsController {
     findOne(id: string): Promise<{
         messages: ({
             user: {
-                username: string;
                 id: string;
+                username: string;
             };
         } & {
             id: string;
@@ -57,8 +57,8 @@ export declare class RoomsController {
         })[];
         members: ({
             user: {
-                username: string;
                 id: string;
+                username: string;
             };
         } & {
             id: string;
@@ -85,8 +85,8 @@ export declare class RoomsController {
     }>;
     getMessages(id: string): Promise<({
         user: {
-            username: string;
             id: string;
+            username: string;
         };
     } & {
         id: string;

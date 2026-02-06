@@ -7,9 +7,9 @@ export declare class AuthController {
     register(createUserDto: CreateUserDto): Promise<{
         accessToken: string;
         user: {
+            id: string;
             email: string;
             username: string;
-            id: string;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -17,9 +17,9 @@ export declare class AuthController {
     login(loginDto: LoginDto): Promise<{
         accessToken: string;
         user: {
+            id: string;
             email: string;
             username: string;
-            id: string;
             createdAt: Date;
             updatedAt: Date;
         };

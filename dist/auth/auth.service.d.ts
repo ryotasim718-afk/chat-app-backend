@@ -9,9 +9,9 @@ export declare class AuthService {
     register(createUserDto: CreateUserDto): Promise<{
         accessToken: string;
         user: {
+            id: string;
             email: string;
             username: string;
-            id: string;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -19,9 +19,9 @@ export declare class AuthService {
     login(loginDto: LoginDto): Promise<{
         accessToken: string;
         user: {
+            id: string;
             email: string;
             username: string;
-            id: string;
             createdAt: Date;
             updatedAt: Date;
         };

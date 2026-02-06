@@ -41,8 +41,8 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
         success: boolean;
         message: {
             user: {
-                username: string;
                 id: string;
+                username: string;
             };
         } & {
             id: string;
